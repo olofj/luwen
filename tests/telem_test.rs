@@ -1,5 +1,5 @@
-use luwen_if::{chip::HlCommsInterface, ChipImpl};
 use luwen_core::Arch;
+use luwen_if::{chip::HlCommsInterface, ChipImpl};
 
 /// Test utilities for verifying telemetry functionality
 ///
@@ -17,27 +17,12 @@ use luwen_core::Arch;
 ///
 /// The tests will automatically detect if compatible hardware is present;
 /// if hardware is not found, the test will be skipped.
+mod test_utils;
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    // Helper function to check if hardware is available for testing
-    fn hardware_available() -> bool {
-        match luwen_ref::detect_chips_fallible() {
-            Ok(chips) => {
-                if chips.is_empty() {
-                    println!("Test SKIPPED: No devices found");
-                    return false;
-                }
-                true
-            }
-            Err(e) => {
-                println!("Test SKIPPED: Error detecting chips: {}", e);
-                false
-            }
-        }
-    }
+    use test_utils::hardware_available;
 
     #[test]
     #[ignore = "Requires hardware"]

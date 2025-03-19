@@ -24,20 +24,12 @@ use ttkmd_if::ioctl::{
 ///
 /// The tests will automatically detect if compatible hardware is present;
 /// if hardware is not found, the test will be skipped.
+mod test_utils;
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    // Helper function to check if hardware is available for testing
-    fn hardware_available() -> bool {
-        let interfaces = luwen_ref::PciDevice::scan();
-        if interfaces.is_empty() {
-            println!("Test SKIPPED: No devices found");
-            return false;
-        }
-        true
-    }
+    use test_utils::hardware_available;
 
     /// Perform a low-level device reset via TTKMD interface on the provided interfaces
     fn lds_reset(interfaces: &[usize]) -> Vec<Chip> {

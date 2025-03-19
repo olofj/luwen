@@ -18,42 +18,18 @@ use luwen_ref::detect_chips;
 ///
 /// The tests will automatically detect if compatible hardware is present;
 /// if hardware is not found, the test will be skipped.
+mod test_utils;
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    // Helper function to check if hardware is available for testing
-    fn hardware_available() -> bool {
-        match detect_chips() {
-            Ok(devices) => {
-                if devices.is_empty() {
-                    println!("Test SKIPPED: No devices found");
-                    return false;
-                }
-
-                // Verify we have a supported chip type (Wormhole or Grayskull)
-                if !devices
-                    .iter()
-                    .any(|d| d.as_wh().is_some() || d.as_gs().is_some())
-                {
-                    println!("Test SKIPPED: No Wormhole or Grayskull device found");
-                    return false;
-                }
-
-                true
-            }
-            Err(e) => {
-                println!("Test SKIPPED: Error detecting chips: {}", e);
-                false
-            }
-        }
-    }
+    use test_utils::has_chip_type;
 
     #[test]
     #[ignore = "Requires hardware"]
     fn test_wormhole_spi_operations() {
-        if !hardware_available() {
+        // Skip if no Wormhole chips available
+        if !has_chip_type(|chip| chip.as_wh().is_some()) {
             return;
         }
 
@@ -129,7 +105,8 @@ mod tests {
     #[test]
     #[ignore = "Requires hardware"]
     fn test_grayskull_spi_operations() {
-        if !hardware_available() {
+        // Skip if no Grayskull chips available
+        if !has_chip_type(|chip| chip.as_gs().is_some()) {
             return;
         }
 
